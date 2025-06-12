@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useActionState, useState } from "react";
+import React, { startTransition, useActionState, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import MDEditor from "@uiw/react-md-editor";
@@ -12,13 +12,21 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { createPitch } from "@/lib/actions";
 
+type InitialState = {
+  error: string;
+  status: "INITIAL" | "PENDING" | "SUCCESS" | "ERROR";
+};
+
 const StartupForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [pitch, setPitch] = useState<string>("");
   const { toast } = useToast();
   const router = useRouter();
 
-  const handleFormSubmit = async (prevState: any, formData: FormData) => {
+  const handleFormSubmit = async (
+    prevState: InitialState,
+    formData: FormData,
+  ) => {
     try {
       const formValues = {
         title: formData.get("title"),
@@ -30,18 +38,14 @@ const StartupForm = () => {
 
       await formSchema.parseAsync(formValues);
 
-      const result = await createPitch(prevState, formData, pitch);
+      const result = await createPitch(formData, pitch);
 
       if (result.status === "SUCCESS") {
-        console.log("result", result, result?._id);
-
         router.push(`/startup/${result?._id}`);
       }
 
       return result;
     } catch (error) {
-      console.log("erorr", error);
-
       if (error instanceof z.ZodError) {
         const fieldErrors = error.flatten().fieldErrors;
 
@@ -70,13 +74,20 @@ const StartupForm = () => {
     }
   };
 
-  const [state, formAction, isPending] = useActionState(handleFormSubmit, {
+  const [, formAction, isPending] = useActionState(handleFormSubmit, {
     error: "",
     status: "INITIAL",
   });
 
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+    startTransition(() => formAction(formData));
+  }
+
   return (
-    <form action={formAction} className="startup-form">
+    <form onSubmit={handleSubmit} className="startup-form">
       <div>
         <label htmlFor="title" className="startup-form_label">
           Title

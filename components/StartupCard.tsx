@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Author, Startup } from "@/sanity/types";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export type StartupTypeCard = Omit<Startup, "author"> & { author?: Author };
+export type StartupTypeCard = Omit<Startup, "author"> & { author: Author };
 
 const StartupCard = ({ post }: { post: StartupTypeCard }) => {
   const {
@@ -34,8 +34,8 @@ const StartupCard = ({ post }: { post: StartupTypeCard }) => {
 
       <div className="flex-between mt-5 gap-5">
         <div className="flex-1">
-          <Link href={`/user/${author?.id}`}>
-            <p className="text-16-medium line-clamp-1">{author?.name}</p>
+          <Link href={`/user/${author.id}`}>
+            <p className="text-16-medium line-clamp-1">{author.name}</p>
           </Link>
 
           <Link href={`/startup/${_id}`}>
@@ -43,10 +43,10 @@ const StartupCard = ({ post }: { post: StartupTypeCard }) => {
           </Link>
         </div>
 
-        <Link href={`/user/${author?.id}`}>
+        <Link href={`/user/${author.id}`}>
           <Image
-            src={author?.image!}
-            alt={author?.name!}
+            src={author.image!}
+            alt={author.name!}
             width={48}
             height={48}
             className="rounded-full"
@@ -57,7 +57,15 @@ const StartupCard = ({ post }: { post: StartupTypeCard }) => {
       <Link href={`/startup/${_id}`}>
         <p className="startup-card_desc">{description}</p>
 
-        <img src={image} alt={title} className="startup-card_img" />
+        {image && title ? (
+          <Image
+            src={image}
+            alt={title}
+            width={164}
+            height={164}
+            className="startup-card_img"
+          />
+        ) : null}
       </Link>
 
       <div className="flex-between gap-3 mt-5">

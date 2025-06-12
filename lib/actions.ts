@@ -5,11 +5,7 @@ import { parseServerActionResponse } from "@/lib/utils";
 import slugify from "slugify";
 import { writeClient } from "@/sanity/lib/write-client";
 
-export const createPitch = async (
-  state: any,
-  form: FormData,
-  pitch: string,
-) => {
+export const createPitch = async (form: FormData, pitch: string) => {
   const session = await auth();
 
   if (!session) {
@@ -19,9 +15,7 @@ export const createPitch = async (
     });
   }
 
-  const { title, description, category, link } = Object.fromEntries(
-    Array.from(form).filter(([key, value]) => key !== "pitch"),
-  );
+  const { title, description, category, link } = Object.fromEntries(form);
 
   const slug = slugify(title as string, { lower: true, strict: true });
 

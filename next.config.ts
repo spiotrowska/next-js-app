@@ -2,12 +2,6 @@ import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  typescript: {
-    ignoreBuildErrors: true, //TODO remove it after fix ts errors
-  },
-  eslint: {
-    ignoreDuringBuilds: true, //TODO remove it after fix eslint errors
-  },
   images: {
     dangerouslyAllowSVG: true,
     remotePatterns: [
