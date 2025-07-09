@@ -1,6 +1,11 @@
 "use client";
 
-import React, { startTransition, useActionState, useState } from "react";
+import React, {
+  FormEvent,
+  startTransition,
+  useActionState,
+  useState,
+} from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import MDEditor from "@uiw/react-md-editor";
@@ -79,10 +84,10 @@ const StartupForm = () => {
     status: "INITIAL",
   });
 
-  function handleSubmit(event) {
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const formData = new FormData(event.target);
+    const formData = new FormData(event.currentTarget);
     startTransition(() => formAction(formData));
   }
 
@@ -167,7 +172,7 @@ const StartupForm = () => {
 
         <MDEditor
           value={pitch}
-          onChange={setPitch}
+          onChange={(value?: string | undefined) => setPitch(value || "")}
           id="pitch"
           preview="edit"
           height={300}
