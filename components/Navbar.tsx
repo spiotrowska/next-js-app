@@ -10,8 +10,17 @@ const Navbar = async () => {
   return (
     <header className="px-5 py-3 bg-white shadow-sm font-works-sans">
       <nav className="flex justify-between items-center">
-        <Link href="/">
-          <Image src="/logo.png" alt="Logo" width={144} height={30} />
+        <Link href="/" className="flex items-center gap-2">
+          <Image
+            src="/logo.png"
+            alt="Logo"
+            width={144}
+            height={30}
+            className="h-[40px] w-auto"
+          />
+          <span className="uppercase text-xl font-semibold text-black">
+            Starups<span className="text-primary">Lib</span>
+          </span>
         </Link>
 
         <div className="flex items-center gap-5 text-black">

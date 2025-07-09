@@ -47,7 +47,7 @@
     @apply font-normal text-sm text-white-100/80;
   }
 
-  .pink_container {
+  .hero_container {
     @apply w-full bg-primary min-h-[530px] pattern flex justify-center items-center flex-col py-10 px-6;
   }
 
@@ -133,7 +133,7 @@
 
   /* startupcard */
   .startup-card {
-    @apply bg-white border-[5px] border-black py-6 px-5 rounded-[22px] shadow-200 hover:border-primary transition-all duration-500 hover:shadow-300 hover:bg-primary-100;
+    @apply bg-white border-[5px] border-black py-6 px-5 rounded-[22px] shadow-200 hover:border-primary transition-all duration-500 hover:shadow-300;
   }
 
   .startup-card_date {

@@ -20,7 +20,7 @@ export default async function Home({
 
   return (
     <>
-      <section className="pink_container">
+      <section className="hero_container">
         <h1 className="heading">
           Pitch Your Startup, <br /> Connect with entrepreneurs
         </h1>
