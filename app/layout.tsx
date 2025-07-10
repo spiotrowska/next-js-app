@@ -57,7 +57,7 @@ const workSans = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "StarupsLib",
+  title: "StartupsLib",
   description: "Pitch, vode and grow",
 };
 

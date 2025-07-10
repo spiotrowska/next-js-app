@@ -19,7 +19,7 @@ const Navbar = async () => {
             className="h-[40px] w-auto"
           />
           <span className="uppercase text-xl font-semibold text-black">
-            Starups<span className="text-primary">Lib</span>
+            Startups<span className="text-primary">Lib</span>
           </span>
         </Link>
 
@@ -28,7 +28,7 @@ const Navbar = async () => {
             <>
               <Link href="/startup/create">
                 <span className="max-sm:hidden">Create</span>
-                <BadgePlus className="size-6 sm:hidden text-red-500" />
+                <BadgePlus className="size-6 sm:hidden text-primary" />
               </Link>
 
               <form
@@ -40,7 +40,7 @@ const Navbar = async () => {
               >
                 <button type="submit">
                   <span className="max-sm:hidden">Logout</span>
-                  <LogOut className="size-6 sm:hidden text-red-500" />
+                  <LogOut className="size-6 sm:hidden text-primary" />
                 </button>
               </form>
 
