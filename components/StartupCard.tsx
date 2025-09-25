@@ -40,14 +40,16 @@ const StartupCard = ({
 
         <div className="flex-between mt-5 gap-5">
           <div className="flex-1">
-            <p className="text-16-medium line-clamp-1">{author.name}</p>
+            <p className="text-16-medium line-clamp-1">
+              {author?.name || author?.username || author?.email}
+            </p>
 
             <h3 className="text-26-semibold line-clamp-1">{title}</h3>
           </div>
 
           <Image
             src={author.image!}
-            alt={author.name!}
+            alt={author?.name || "author"}
             width={48}
             height={48}
             className="rounded-full"
