@@ -47,13 +47,15 @@ const StartupCard = ({
             <h3 className="text-26-semibold line-clamp-1">{title}</h3>
           </div>
 
-          <Image
-            src={author.image!}
-            alt={author?.name || "author"}
-            width={48}
-            height={48}
-            className="rounded-full"
-          />
+          {author?.image ? (
+            <Image
+              src={author.image}
+              alt={author.name || "author"}
+              width={48}
+              height={48}
+              className="rounded-full"
+            />
+          ) : null}
         </div>
 
         <p className="startup-card_desc">{description}</p>
