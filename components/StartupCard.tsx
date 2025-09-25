@@ -25,8 +25,6 @@ const StartupCard = ({
     description,
   } = post;
 
-  console.log("post", post, author._id, author.id);
-
   return (
     <li className="startup-card group">
       <Link href={`/startup/${_id}`}>
