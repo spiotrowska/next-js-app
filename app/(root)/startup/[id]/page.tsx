@@ -11,14 +11,20 @@ import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
 import View from "@/components/View";
 import StartupCard, { StartupTypeCard } from "@/components/StartupCard";
-// import markdownit from "markdown-it";
-
-// const md = markdownit();
+import markdownit from "markdown-it";
+import { ReactElement } from "react";
 
 export const experimental_ppr = true;
 
-const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
+type PageProps = {
+  params: Promise<{ id: string }>;
+};
+
+const Page = async ({
+  params,
+}: PageProps): Promise<ReactElement<PageProps>> => {
   const id = (await params).id;
+  const md = markdownit();
 
   const [post, { select: editorPosts }] = await Promise.all([
     client.fetch(STARTUP_BY_ID_QUERY, { id }),
@@ -27,7 +33,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
 
   if (!post) return notFound();
 
-  // const parsedContent = md.MarkdownIt.render(post.content); // TODO doesn't work
+  const parsedContent = md.render(post.pitch);
 
   return (
     <>
@@ -68,15 +74,17 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
               </div>
             </Link>
 
-            <p className="category-tag">{post.category}</p>
+            <Link href={`/?query=${post.category.toLowerCase()}`}>
+              <p className="category-tag">{post.category}</p>
+            </Link>
           </div>
 
           <h3 className="text-30-bold">Pitch Details</h3>
-          {/*{parsedContent ? (*/}
-          {post.content ? (
+
+          {parsedContent ? (
             <article
               className="prose max-w-4xl font-work-sans break-all"
-              dangerouslySetInnerHTML={{ __html: post.content }}
+              dangerouslySetInnerHTML={{ __html: parsedContent }}
             />
           ) : (
             <p className="no-results">No details provided</p>

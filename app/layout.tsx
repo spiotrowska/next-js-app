@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { ReactNode } from "react";
+import { ReactNode, ReactElement } from "react";
 import localFont from "next/font/local";
 import "easymde/dist/easymde.min.css";
 import { Toaster } from "@/components/ui/toaster";
@@ -61,15 +61,16 @@ export const metadata: Metadata = {
   description: "Pitch, vode and grow",
 };
 
+type RootLayoutProps = Readonly<{ children: ReactNode }>;
+
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: ReactNode;
-}>) {
+}: RootLayoutProps): ReactElement<RootLayoutProps> {
   return (
     <html lang="en">
       <body className={workSans.variable}>
         {children}
+
         <Toaster />
       </body>
     </html>

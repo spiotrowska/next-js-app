@@ -5,6 +5,7 @@ import React, {
   startTransition,
   useActionState,
   useState,
+  ReactElement,
 } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -22,7 +23,7 @@ type InitialState = {
   status: "INITIAL" | "PENDING" | "SUCCESS" | "ERROR";
 };
 
-const StartupForm = () => {
+const StartupForm = (): ReactElement => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [pitch, setPitch] = useState<string>("");
   const { toast } = useToast();
@@ -30,8 +31,10 @@ const StartupForm = () => {
 
   const handleFormSubmit = async (
     prevState: InitialState,
-    formData: FormData,
-  ) => {
+    formData: FormData
+  ): Promise<
+    InitialState & { _id?: string; status: InitialState["status"] }
+  > => {
     try {
       const formValues = {
         title: formData.get("title"),
@@ -84,7 +87,7 @@ const StartupForm = () => {
     status: "INITIAL",
   });
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: FormEvent<HTMLFormElement>): void {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);

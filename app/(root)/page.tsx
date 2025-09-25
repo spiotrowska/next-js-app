@@ -2,19 +2,18 @@ import SearchForm from "@/components/SearchForm";
 import StartupCard, { StartupTypeCard } from "@/components/StartupCard";
 import { STARTUPS_QUERY } from "@/sanity/lib/queries";
 import { sanityFetch, SanityLive } from "@/sanity/lib/live";
-import { auth } from "@/auth";
+// import { auth } from "@/auth";
+import { ReactElement } from "react";
+
+type HomeProps = { searchParams: Promise<{ query?: string }> };
 
 export default async function Home({
   searchParams,
-}: {
-  searchParams: Promise<{ query?: string }>;
-}) {
+}: HomeProps): Promise<ReactElement<HomeProps>> {
   const query = (await searchParams).query;
   const params = { search: query || null };
 
-  const session = await auth();
-
-  console.log("Session:", session?.id);
+  // const session = await auth();
 
   const { data: posts } = await sanityFetch({ query: STARTUPS_QUERY, params });
 

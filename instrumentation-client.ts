@@ -11,7 +11,6 @@ Sentry.init({
   integrations: [
     Sentry.replayIntegration(),
     Sentry.feedbackIntegration({
-      // TODO doesn't work
       // Additional SDK configuration goes in here, for example:
       colorScheme: "system",
     }),

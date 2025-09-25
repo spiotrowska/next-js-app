@@ -6,10 +6,17 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import UserStartups from "@/components/UserStartups";
 import { StartupCardSkeleton } from "@/components/StartupCard";
+import { ReactElement } from "react";
 
 export const experimental_ppr = true;
 
-const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
+type UserPageProps = {
+  params: Promise<{ id: string }>;
+};
+
+const Page = async ({
+  params,
+}: UserPageProps): Promise<ReactElement<UserPageProps>> => {
   const id = (await params).id;
   const session = await auth();
   const user = await client.fetch(AUTHOR_BY_ID_QUERY, { id });

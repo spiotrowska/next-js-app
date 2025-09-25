@@ -1,12 +1,16 @@
-import { ReactNode } from "react";
+import { ReactNode, ReactElement } from "react";
 import Navbar from "@/components/Navbar";
 
-export default function Layout({ children }: Readonly<{ children: ReactNode }>) {
+type LayoutProps = Readonly<{ children: ReactNode }>;
+
+export default function Layout({
+  children,
+}: LayoutProps): ReactElement<LayoutProps> {
   return (
     <main className="font-work-sans">
       <Navbar />
 
-      {children}
+      <div className="pt-16">{children}</div>
     </main>
   );
 }
