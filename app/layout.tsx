@@ -4,6 +4,9 @@ import { ReactNode, ReactElement } from "react";
 import localFont from "next/font/local";
 import "easymde/dist/easymde.min.css";
 import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { cookies } from "next/headers";
+import { cn } from "@/lib/utils";
 
 const workSans = localFont({
   src: [
@@ -63,15 +66,18 @@ export const metadata: Metadata = {
 
 type RootLayoutProps = Readonly<{ children: ReactNode }>;
 
-export default function RootLayout({
-  children,
-}: RootLayoutProps): ReactElement<RootLayoutProps> {
-  return (
-    <html lang="en">
-      <body className={workSans.variable}>
-        {children}
+export default async function RootLayout({ children }: RootLayoutProps): Promise<ReactElement<RootLayoutProps>> {
+  const themeStore = await cookies();
+  const themeCookie = themeStore.get("app-theme")?.value;
+  const isDark = themeCookie === "dark";
 
-        <Toaster />
+  return (
+    <html lang="en" className={isDark ? "dark" : undefined}>
+      <body className={cn("dark:bg-black", workSans.variable)}>
+        <ThemeProvider initialTheme={isDark ? "dark" : "light"}>
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

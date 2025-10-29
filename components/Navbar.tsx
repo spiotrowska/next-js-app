@@ -3,13 +3,14 @@ import Image from "next/image";
 import { auth, signIn, signOut } from "@/auth";
 import { BadgePlus, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { ReactElement } from "react";
 
 const Navbar = async (): Promise<ReactElement> => {
   const session = await auth();
 
   return (
-    <header className="px-5 py-3 bg-white shadow-sm font-works-sans fixed w-full top-0 z-50">
+    <header className="px-5 py-3 bg-white dark:bg-black-200 shadow-sm font-works-sans fixed w-full top-0 z-50 transition-colors">
       <nav className="flex justify-between items-center">
         <Link href="/" className="flex items-center gap-2">
           <Image
@@ -20,12 +21,14 @@ const Navbar = async (): Promise<ReactElement> => {
             className="h-[40px] w-auto"
           />
 
-          <span className="uppercase text-xl font-semibold text-black">
+          <span className="uppercase text-xl font-semibold text-black dark:text-white">
             Startups<span className="text-primary">Lib</span>
           </span>
         </Link>
 
-        <div className="flex items-center gap-5 text-black">
+        <div className="flex items-center gap-5 text-black dark:text-white">
+          <ThemeToggle />
+
           {session && session?.user ? (
             <>
               <Link href="/startup/create">
@@ -47,7 +50,7 @@ const Navbar = async (): Promise<ReactElement> => {
                 </button>
               </form>
 
-              <Link href={`/user/${session?.id}`}>
+              <Link href={`/user/${session?.user?.id}`}>
                 <Avatar className="size-10">
                   <AvatarImage
                     src={session?.user?.image || ""}

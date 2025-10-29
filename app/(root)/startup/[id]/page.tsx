@@ -39,7 +39,9 @@ const Page = async ({
     <>
       <section className="hero_container !min-h-[230px]">
         <p className="tag">{formatDate(post?._createdAt)}</p>
+
         <h1 className="heading">{post.title}</h1>
+        
         <p className="sub-heading !max-w-5xl">{post.description}</p>
       </section>
 
@@ -83,7 +85,7 @@ const Page = async ({
 
           {parsedContent ? (
             <article
-              className="prose max-w-4xl font-work-sans break-all"
+              className="prose max-w-4xl font-work-sans break-all dark:text-white child:dark:text-white child:child:dark:text-white"
               dangerouslySetInnerHTML={{ __html: parsedContent }}
             />
           ) : (

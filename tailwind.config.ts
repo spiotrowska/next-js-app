@@ -43,7 +43,11 @@ const config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
+  plugins: [
+    function ({ addVariant }: { addVariant: (name: string, selector: string) => void }) {
+      addVariant('child', '& > *');
+    }
+  ],
 };
 
 export default config;

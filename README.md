@@ -1,36 +1,78 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+## Dark Mode
 
-First, run the development server:
+Dark mode is SSR-friendly and cookie driven:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Tailwind `dark` class strategy.
+- Server reads `app-theme` cookie in `app/layout.tsx` and applies `class="dark"` to `<html>` to avoid any flash.
+- `ThemeProvider` receives `initialTheme` from the server and manages client-side toggling.
+- `ThemeToggle` POSTs to `/api/theme` to persist the preference; cookie is `app-theme` (1 year lifetime, SameSite=Lax).
+- Updated utility classes in `globals.css` use `dark:` variants; additional semantic CSS variables are defined for future extension.
+
+### Usage
+
+```tsx
+import { useTheme } from "@/components/ThemeProvider";
+
+function Example() {
+  const { theme, toggleTheme } = useTheme();
+  return <button onClick={toggleTheme}>Current: {theme}</button>;
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Changing Theme Programmatically
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```ts
+await fetch("/api/theme", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ theme: "dark" }),
+});
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Resetting Theme
 
-## Learn More
+Delete the cookie in the browser devtools or issue:
 
-To learn more about Next.js, take a look at the following resources:
+```js
+document.cookie = "app-theme=; Max-Age=0; path=/";
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Next request will fall back to light by default.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This project includes a client-side dark mode implementation:
 
-## Deploy on Vercel
+- Tailwind `dark` class strategy (see `tailwind.config.ts`).
+- Persistent theme stored in `localStorage` under the key `app-theme`.
+- A no-flash inline script in `app/layout.tsx` applies `class="dark"` before React hydration if previous choice or system preference is dark.
+- `ThemeProvider` (`components/ThemeProvider.tsx`) exposes `theme`, `toggleTheme`, and `setTheme`.
+- `ThemeToggle` button in the navbar switches between light/dark.
+- Custom CSS variables in `globals.css` with overrides under `.dark` plus utility classes updated with `dark:` variants.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Usage
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Call `useTheme()` inside client components to access or change the theme.
+
+```tsx
+import { useTheme } from "@/components/ThemeProvider";
+
+function Example() {
+  const { theme, toggleTheme } = useTheme();
+  return <button onClick={toggleTheme}>Current: {theme}</button>;
+}
+```
+
+### Extending
+
+Add new semantic colors by extending CSS variables in `:root` and `.dark` in `globals.css`, then reference via utility classes or `var(--bg)` etc.
+
+### Resetting Theme
+
+Remove `localStorage` key:
+
+```js
+localStorage.removeItem("app-theme");
+```
+
+Reload will fall back to system preference.

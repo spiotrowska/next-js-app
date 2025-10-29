@@ -13,7 +13,7 @@ const SearchForm = ({
       <input
         name="query"
         defaultValue={query}
-        className="search-input"
+        className="search-input dark:bg-black-100 dark:text-white"
         placeholder="Search Startup"
       />
 

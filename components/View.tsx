@@ -14,10 +14,7 @@ const View = async ({ id }: ViewProps): Promise<ReactElement<ViewProps>> => {
 
   after(
     async () =>
-      await writeClient
-        .patch(id)
-        .set({ views: totalViews + 1 })
-        .commit()
+      await writeClient.patch(id).set({ views: totalViews + 1 }).commit()
   );
 
   return (
