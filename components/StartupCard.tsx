@@ -26,7 +26,7 @@ const StartupCard = ({
   } = post;
 
   return (
-    <li className="startup-card group">
+    <article className="startup-card group">
       <Link href={`/startup/${_id}`}>
         <div className="flex-between">
           <p className="startup_card_date">{formatDate(_createdAt)}</p>
@@ -78,16 +78,16 @@ const StartupCard = ({
           </Button>
         </div>
       </Link>
-    </li>
+    </article>
   );
 };
 
 export const StartupCardSkeleton = (): ReactElement => (
   <>
     {[0, 1, 2, 3, 4].map((index: number) => (
-      <li key={cn("skeleton", index)}>
+      <article key={cn("skeleton", index)}>
         <Skeleton className="startup-card_skeleton" />
-      </li>
+      </article>
     ))}
   </>
 );

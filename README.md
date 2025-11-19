@@ -1,78 +1,192 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<h1 align="center">StartupsLib</h1>
+<p align="center">Pitch ideas. Get feedback. Grow startups – built with Next.js 15 App Router, Sanity, NextAuth, Tailwind & modern DX patterns.</p>
 
-## Dark Mode
+## Table of Contents
 
-Dark mode is SSR-friendly and cookie driven:
+1. Overview
+2. Tech Stack
+3. Core Features
+4. Architecture & Routing
+5. Data Layer (Sanity)
+6. Authentication (NextAuth + GitHub)
+7. Theming & Fonts
+8. Searching & Filtering
+9. Startup Creation Flow (Server Actions)
+10. Markdown Pitch & Editor Picks
+11. View Counter & Increment on Read
+12. Performance Techniques (Parallel Fetching, PPR)
+13. Toast & UI System
+14. Error Handling & Sentry
+15. Development Setup
+16. Environment Variables
+17. Scripts
+18. Deployment Notes
+19. Future Improvements
 
-- Tailwind `dark` class strategy.
-- Server reads `app-theme` cookie in `app/layout.tsx` and applies `class="dark"` to `<html>` to avoid any flash.
-- `ThemeProvider` receives `initialTheme` from the server and manages client-side toggling.
-- `ThemeToggle` POSTs to `/api/theme` to persist the preference; cookie is `app-theme` (1 year lifetime, SameSite=Lax).
-- Updated utility classes in `globals.css` use `dark:` variants; additional semantic CSS variables are defined for future extension.
+---
 
-### Usage
+## 1. Overview
 
-```tsx
-import { useTheme } from "@/components/ThemeProvider";
+StartupsLib is a small platform to submit, browse and evaluate startup pitches. It demonstrates modern Next.js 15 capabilities (App Router, server actions, streaming, experimental Partial Prerendering) together with Sanity CMS for structured content, GitHub OAuth via NextAuth, and a minimal design system on Tailwind.
 
-function Example() {
-  const { theme, toggleTheme } = useTheme();
-  return <button onClick={toggleTheme}>Current: {theme}</button>;
-}
+## 2. Tech Stack
+
+- Framework: Next.js 15 (canary) App Router
+- Language: TypeScript
+- CMS: Sanity v3 (schema types + vision + markdown plugin)
+- Auth: NextAuth v5 (GitHub provider) with session/JWT callbacks
+- Styling: TailwindCSS + custom Radix UI primitives + local variable font
+- Monitoring: Sentry (@sentry/nextjs) + `global-error.tsx`
+- Validation: Zod
+- Deployment: Vercel
+
+## 3. Core Features
+
+- Browse startups with search filtering.
+- View detailed pitch rendered from markdown.
+- Track view counts (increment after successful fetch via `after()` API).
+- Create startups with validated form + server action.
+- GitHub login creates or reuses `author` record.
+- Editor Picks playlist curated via Sanity references.
+- Dark/light theme persisted in a cookie (SSR no-flash).
+
+## 4. Architecture & Routing
+
+- App Router: top-level `app/layout.tsx` (fonts, theme, toaster) + sectional `(root)` layout with navbar.
+- Dynamic routes: `startup/[id]`, `user/[id]` using server components.
+- Experimental Partial Prerendering via `export const experimental_ppr = true` on dynamic pages to stream non-critical data boundaries.
+- API route: `/api/theme` for theme persistence.
+
+## 5. Data Layer (Sanity)
+
+- Schemas: `author`, `startup`, `playlist` (editor picks) under `sanity/schemaTypes`.
+- Read client (`sanity/lib/client.ts`) uses CDN; write client (`write-client.ts`) disables CDN + token.
+- GROQ queries centralized in `sanity/lib/queries.ts` and strongly typed by generated types (`sanity/typegen`).
+- Seed content provided via NDJSON (see `sanity/seed/seed.ndjson`).
+- Structure builder customizes Studio nav (`structure.ts`).
+
+## 6. Authentication (NextAuth + GitHub)
+
+- Config in `auth.ts` registers GitHub provider.
+- `signIn` callback ensures an `author` document exists (fetch by GitHub id; create if missing).
+- `jwt` callback loads Sanity author `_id` -> `token.id`.
+- `session` callback merges `token.id` into `session.user.id` for server actions and route decisions.
+- Type augmentation in `next-auth.d.ts` (interface merging, not type overwrite).
+
+## 7. Theming & Fonts
+
+- Theme cookie (`app-theme`) read server-side in `app/layout.tsx` for initial `<html class="dark">` to avoid flicker.
+- `ThemeProvider` supplies `toggleTheme()`; updates DOM class.
+- `ThemeToggle` persists choice through POST to `/api/theme`.
+- Local Work Sans font loaded via `next/font/local` (weights mapped to CSS variable `--font-work-sans`).
+
+## 8. Searching & Filtering
+
+- Landing page (`(root)/page.tsx`) reads `searchParams.query`.
+- GROQ query applies match across title/category/author fields.
+- Search form uses `<Form action="/">` (server action form) and a reset component to clear query.
+
+## 9. Startup Creation Flow (Server Actions)
+
+- Page `startup/create/page.tsx` checks auth; redirects if unauthenticated.
+- `StartupForm` validates inputs with Zod before calling `createPitch` server action.
+- `createPitch` generates slug (`slugify`), attaches author reference (`session.user.id`), writes to Sanity via `writeClient`.
+- Action result triggers client navigation to new detail route.
+
+## 10. Markdown Pitch & Editor Picks
+
+- Pitch stored as markdown (`startup.pitch` schema type = markdown plugin).
+- Rendered with `markdown-it` server-side to HTML inside detail page.
+- Editor Picks loaded from `playlist` document referencing curated startups.
+
+## 11. View Counter & Increment on Read
+
+- Detail page fetches startup views (`STARTUP_VIEWS_QUERY`).
+- `View` component increments value after response using `after()` and a patch mutation.
+- Ensures accurate counts without blocking initial payload.
+
+## 12. Performance Techniques (Parallel Fetching, PPR)
+
+- `Promise.all` fetches the startup and editor picks concurrently.
+- Suspense boundaries around view counter (skeleton fallback).
+- Partial Prerendering streams slower data later to improve TTFB.
+
+## 13. Toast & UI System
+
+- Toast state machine (`hooks/use-toast.ts`) with capped queue and delayed removal.
+- `Toaster` component renders mapped toasts with Radix primitives.
+- Shared UI primitives (`button`, `input`, `textarea`, `avatar`, `skeleton`) using Tailwind + variants.
+
+## 14. Error Handling & Sentry
+
+- Global error boundary: `app/global-error.tsx` can capture and render fallback.
+- Sentry SDK (@sentry/nextjs) integrated (config files present) for tracing runtime errors.
+- Server actions wrap try/catch returning normalized error payloads.
+
+## 15. Development Setup
+
+```bash
+pnpm install
+pnpm dev
 ```
 
-### Changing Theme Programmatically
+- Uses TurboPack in dev (`next dev --turbopack`).
+- Run `pnpm typegen` to extract schema and generate TS types for GROQ results.
+- Sanity Studio mounted at `/studio` route; requires env vars.
 
-```ts
-await fetch("/api/theme", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ theme: "dark" }),
-});
-```
+## 16. Environment Variables
 
-### Resetting Theme
+| Variable                         | Purpose                            |
+| -------------------------------- | ---------------------------------- |
+| `NEXT_PUBLIC_SANITY_PROJECT_ID`  | Sanity project id                  |
+| `NEXT_PUBLIC_SANITY_DATASET`     | Dataset name (e.g. `production`)   |
+| `NEXT_PUBLIC_SANITY_API_VERSION` | API version date                   |
+| `SANITY_WRITE_TOKEN`             | Write token for mutations (server) |
+| `GITHUB_ID` / `GITHUB_SECRET`    | GitHub OAuth credentials           |
+| `SENTRY_DSN`                     | Sentry project DSN (optional)      |
 
-Delete the cookie in the browser devtools or issue:
+## 17. Scripts
 
-```js
-document.cookie = "app-theme=; Max-Age=0; path=/";
-```
+| Script                | Description                             |
+| --------------------- | --------------------------------------- |
+| `dev`                 | Start dev server with TurboPack         |
+| `build`               | Production build                        |
+| `start`               | Run built app                           |
+| `lint`                | ESLint checks                           |
+| `typegen`             | Sanity schema extract + type generation |
+| `predev` / `prebuild` | Auto-run typegen before dev/build       |
 
-Next request will fall back to light by default.
+## 18. Deployment Notes
 
-This project includes a client-side dark mode implementation:
+- Set all required env vars on hosting provider (e.g. Vercel project settings).
+- Ensure Sanity CORS includes deployment origin + local dev.
+- Use canary Next.js; keep an eye on PPR experimental changes when upgrading.
+- Sentry source maps: upload automatically via build step if configured.
 
-- Tailwind `dark` class strategy (see `tailwind.config.ts`).
-- Persistent theme stored in `localStorage` under the key `app-theme`.
-- A no-flash inline script in `app/layout.tsx` applies `class="dark"` before React hydration if previous choice or system preference is dark.
-- `ThemeProvider` (`components/ThemeProvider.tsx`) exposes `theme`, `toggleTheme`, and `setTheme`.
-- `ThemeToggle` button in the navbar switches between light/dark.
-- Custom CSS variables in `globals.css` with overrides under `.dark` plus utility classes updated with `dark:` variants.
+## 19. Future Improvements
 
-### Usage
+- Add system theme auto-detect fallback when no cookie set.
+- Introduce optimistic UI for view counts.
+- Implement pagination or infinite scroll for large startup sets.
+- Add image optimization or Sanity image pipeline usage instead of raw URLs.
+- Rate limiting or spam protection on create action.
+- Richer markdown sanitization / allowed elements controls.
+- Dedicated accessibility audit & improvements (focus states, ARIA).
 
-Call `useTheme()` inside client components to access or change the theme.
+---
 
-```tsx
-import { useTheme } from "@/components/ThemeProvider";
+## Contributing
 
-function Example() {
-  const { theme, toggleTheme } = useTheme();
-  return <button onClick={toggleTheme}>Current: {theme}</button>;
-}
-```
+1. Fork & clone.
+2. Create feature branch.
+3. Run dev + typegen.
+4. Add tests or docs for new behaviors.
+5. Open PR describing change & reasoning.
 
-### Extending
+## License
 
-Add new semantic colors by extending CSS variables in `:root` and `.dark` in `globals.css`, then reference via utility classes or `var(--bg)` etc.
+MIT – use freely for learning and experimentation.
 
-### Resetting Theme
+---
 
-Remove `localStorage` key:
-
-```js
-localStorage.removeItem("app-theme");
-```
-
-Reload will fall back to system preference.
+<p align="center">Built with care & modern web best practices.</p>

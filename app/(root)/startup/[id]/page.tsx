@@ -14,6 +14,23 @@ import StartupCard, { StartupTypeCard } from "@/components/StartupCard";
 import markdownit from "markdown-it";
 import { ReactElement } from "react";
 
+// Define isSpace function globally for markdown-it
+declare global {
+  function isSpace(code: number): boolean;
+}
+
+// Define the isSpace function
+globalThis.isSpace = function (code: number): boolean {
+  return (
+    code === 0x20 ||
+    code === 0x09 ||
+    code === 0x0a ||
+    code === 0x0b ||
+    code === 0x0c ||
+    code === 0x0d
+  );
+};
+
 export const experimental_ppr = true;
 
 type PageProps = {
@@ -41,7 +58,7 @@ const Page = async ({
         <p className="tag">{formatDate(post?._createdAt)}</p>
 
         <h1 className="heading">{post.title}</h1>
-        
+
         <p className="sub-heading !max-w-5xl">{post.description}</p>
       </section>
 
@@ -85,7 +102,7 @@ const Page = async ({
 
           {parsedContent ? (
             <article
-              className="prose max-w-4xl font-work-sans break-all dark:text-white child:dark:text-white child:child:dark:text-white"
+              className="markdown-text max-w-4xl font-work-sans break-all dark:text-white"
               dangerouslySetInnerHTML={{ __html: parsedContent }}
             />
           ) : (
@@ -97,9 +114,9 @@ const Page = async ({
 
         {editorPosts?.length > 0 ? (
           <div className="max-w-4xl mx-auto">
-            <p className="text-30-semibold">Editor Picks</p>
+            <p className="text-30-semibold">Other startups</p>
 
-            <ul className="mt-7 card_grid-sm">
+            <ul className="mt-7 pl-0 card_grid-sm">
               {editorPosts.map((post: StartupTypeCard) => (
                 <StartupCard key={post._id} post={post} />
               ))}

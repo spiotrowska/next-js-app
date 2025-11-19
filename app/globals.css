@@ -15,6 +15,7 @@
     --border: #000000;
     --accent: #80A5B5;
   }
+
   .dark {
     --bg: #141413;
     --bg-alt: #333333;
@@ -23,6 +24,54 @@
     --text-muted: #F7F7F7;
     --border: #FFFFFF;
     --accent: #d5eeff;
+  }
+
+  h1 {
+    @apply text-3xl font-extrabold text-black dark:text-white;
+  }
+
+  h2 {
+    @apply text-2xl font-bold text-black dark:text-white;
+  }
+
+  h3 {
+    @apply text-xl font-semibold text-black dark:text-white;
+  }
+
+  .markdown-text a {
+    @apply underline;
+  }
+
+  p {
+    @apply text-base text-black dark:text-white;
+  }
+
+  table {
+    @apply w-full border-collapse;
+  }
+
+  th, td {
+    @apply border px-4 py-2 text-left;
+  }
+
+  ul {
+    @apply list-disc pl-5;
+  }
+
+  ol {
+    @apply list-decimal pl-5;
+  }
+
+  code {
+    @apply font-mono bg-zinc-200 px-1 rounded dark:text-black;
+  }
+
+  pre {
+    @apply bg-zinc-200 p-4 rounded overflow-x-auto dark:text-black;
+  }
+
+  blockquote {
+    @apply border-l-4 border-zinc-400 pl-4 italic text-zinc-600 dark:text-black;
   }
 }
 
@@ -68,7 +117,7 @@
   }
 
   .tag {
-    @apply bg-secondary px-6 py-3 font-work-sans font-bold rounded-sm uppercase relative tag-tri;
+    @apply bg-secondary px-6 py-3 font-work-sans font-bold rounded-sm uppercase relative tag-tri text-black dark:text-black;
   }
 
   .heading {
@@ -85,6 +134,16 @@
 
   .card_grid {
     @apply grid md:grid-cols-3 sm:grid-cols-2 gap-5;
+  }
+
+  .card_grid article {
+    display: grid;
+  }
+
+  .card_grid article a {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 5;
   }
 
   .card_grid-sm {
@@ -149,7 +208,7 @@
 
   /* startupcard */
   .startup-card {
-    @apply bg-white border-[5px] border-black py-6 px-5 rounded-[22px] shadow-200 hover:border-primary transition-all duration-500 hover:shadow-300 dark:bg-black-100 dark:border-white;
+    @apply bg-white border-[5px] border-black py-6 px-5 rounded-[22px] shadow-200 hover:border-primary transition-all duration-500 hover:shadow-300 dark:bg-black-100 dark:border-white list-none;
   }
 
   .startup-card_date {
@@ -211,7 +270,7 @@
   }
 
   .category-tag {
-    @apply font-medium text-[16px] bg-primary-100 px-4 py-2 rounded-full;
+    @apply font-medium text-[16px] bg-primary-100 px-4 py-2 rounded-full text-black dark:text-black;
   }
 
   .pattern {
