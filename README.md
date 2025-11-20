@@ -27,17 +27,18 @@
 
 ## 1. Overview
 
-StartupsLib is a small platform to submit, browse and evaluate startup pitches. It demonstrates modern Next.js 16 capabilities (App Router with Turbopack, server actions, streaming) together with Sanity CMS for structured content, GitHub OAuth via NextAuth, and a minimal design system on Tailwind.
+StartupsLib is a small platform to submit, browse and evaluate startup pitches. It demonstrates modern Next.js 16 capabilities (App Router with Turbopack, server actions, streaming) together with Sanity CMS v4 for structured content, GitHub OAuth via NextAuth, and a minimal design system on Tailwind.
 
 ## 2. Tech Stack
 
 - Framework: Next.js 16 App Router (with Turbopack)
 - Language: TypeScript
-- CMS: Sanity v3 (schema types + vision + markdown plugin)
+- CMS: Sanity v4 (schema types + vision + markdown plugin)
 - Auth: NextAuth v5 (GitHub provider) with session/JWT callbacks
 - Styling: TailwindCSS + custom Radix UI primitives + local variable font
 - Monitoring: Sentry (@sentry/nextjs) + `global-error.tsx`
-- Validation: Zod
+- Validation: Zod v4
+- Queries: groq v4
 - Deployment: Vercel
 
 ## 3. Core Features

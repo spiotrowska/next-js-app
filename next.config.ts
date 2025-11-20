@@ -12,7 +12,11 @@ const nextConfig: NextConfig = {
     ],
   },
   cacheComponents: true,
-  turbopack: {},
+  turbopack: {
+    // Explicitly set the workspace root to silence multiple lockfile inference warnings.
+    // This tells Turbopack not to traverse parent directories for additional lockfiles.
+    root: __dirname,
+  },
   devIndicators: {
     position: "bottom-right",
   },

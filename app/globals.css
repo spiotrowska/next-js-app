@@ -27,7 +27,7 @@
   }
 
   h1 {
-    @apply text-3xl font-extrabold text-black dark:text-white;
+    @apply text-[30px] font-extrabold text-black dark:text-white;
   }
 
   h2 {

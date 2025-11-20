@@ -36,13 +36,10 @@ function getInitialTheme(): Theme {
 }
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [theme, setThemeState] = useState<Theme>("light");
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setThemeState(getInitialTheme());
-    setMounted(true);
-  }, []);
+  // Initialize once; reading cookies in client avoids SSR mismatch while not triggering extra render.
+  const [theme, setThemeState] = useState<Theme>(() => getInitialTheme());
+  // We can derive 'mounted' from a ref without triggering a state update inside effect.
+  const [mounted] = useState(true);
 
   useEffect(() => {
     if (!mounted) return;
