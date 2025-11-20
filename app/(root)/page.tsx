@@ -2,17 +2,39 @@ import SearchForm from "@/components/SearchForm";
 import StartupCard, { StartupTypeCard } from "@/components/StartupCard";
 import { STARTUPS_QUERY } from "@/sanity/lib/queries";
 import { sanityFetch, SanityLive } from "@/sanity/lib/live";
-import { ReactElement } from "react";
+import { ReactElement, Suspense } from "react";
+import { StartupCardSkeleton } from "@/components/StartupCard";
 
 type HomeProps = { searchParams: Promise<{ query?: string }> };
 
-export default async function Home({
+async function StartupsList({
   searchParams,
-}: HomeProps): Promise<ReactElement<HomeProps>> {
+}: {
+  searchParams: Promise<{ query?: string }>;
+}) {
   const query = (await searchParams).query;
   const params = { search: query || null };
-
   const { data: posts } = await sanityFetch({ query: STARTUPS_QUERY, params });
+
+  return (
+    <>
+      {posts?.length > 0 ? (
+        posts.map((post: StartupTypeCard) => (
+          <StartupCard key={post?._id} post={post} />
+        ))
+      ) : (
+        <p className="no-results">No startups found</p>
+      )}
+    </>
+  );
+}
+
+async function Hero({
+  searchParams,
+}: {
+  searchParams: Promise<{ query?: string }>;
+}) {
+  const query = (await searchParams).query;
 
   return (
     <>
@@ -34,15 +56,23 @@ export default async function Home({
         </p>
 
         <div className="mt-7 pl-0 card_grid">
-          {posts?.length > 0 ? (
-            posts.map((post: StartupTypeCard) => (
-              <StartupCard key={post?._id} post={post} />
-            ))
-          ) : (
-            <p className="no-results">No startups found</p>
-          )}
+          <Suspense fallback={<StartupCardSkeleton />}>
+            <StartupsList searchParams={searchParams} />
+          </Suspense>
         </div>
       </section>
+    </>
+  );
+}
+
+export default async function Home({
+  searchParams,
+}: HomeProps): Promise<ReactElement<HomeProps>> {
+  return (
+    <>
+      <Suspense fallback={<div className="w-full h-screen" />}>
+        <Hero searchParams={searchParams} />
+      </Suspense>
 
       <SanityLive />
     </>

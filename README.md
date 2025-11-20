@@ -1,5 +1,5 @@
 <h1 align="center">StartupsLib</h1>
-<p align="center">Pitch ideas. Get feedback. Grow startups – built with Next.js 15 App Router, Sanity, NextAuth, Tailwind & modern DX patterns.</p>
+<p align="center">Pitch ideas. Get feedback. Grow startups – built with Next.js 16 App Router, Sanity, NextAuth, Tailwind & modern DX patterns.</p>
 
 ## Table of Contents
 
@@ -27,11 +27,11 @@
 
 ## 1. Overview
 
-StartupsLib is a small platform to submit, browse and evaluate startup pitches. It demonstrates modern Next.js 15 capabilities (App Router, server actions, streaming, experimental Partial Prerendering) together with Sanity CMS for structured content, GitHub OAuth via NextAuth, and a minimal design system on Tailwind.
+StartupsLib is a small platform to submit, browse and evaluate startup pitches. It demonstrates modern Next.js 16 capabilities (App Router with Turbopack, server actions, streaming) together with Sanity CMS for structured content, GitHub OAuth via NextAuth, and a minimal design system on Tailwind.
 
 ## 2. Tech Stack
 
-- Framework: Next.js 15 (canary) App Router
+- Framework: Next.js 16 App Router (with Turbopack)
 - Language: TypeScript
 - CMS: Sanity v3 (schema types + vision + markdown plugin)
 - Auth: NextAuth v5 (GitHub provider) with session/JWT callbacks
@@ -54,7 +54,7 @@ StartupsLib is a small platform to submit, browse and evaluate startup pitches. 
 
 - App Router: top-level `app/layout.tsx` (fonts, theme, toaster) + sectional `(root)` layout with navbar.
 - Dynamic routes: `startup/[id]`, `user/[id]` using server components.
-- Experimental Partial Prerendering via `export const experimental_ppr = true` on dynamic pages to stream non-critical data boundaries.
+- **Cache Components (Partial Prerendering)**: Enabled via `cacheComponents: true` in Next.js 16. All async data access wrapped in Suspense boundaries for optimal streaming and caching.
 - API route: `/api/theme` for theme persistence.
 
 ## 5. Data Layer (Sanity)
@@ -67,7 +67,7 @@ StartupsLib is a small platform to submit, browse and evaluate startup pitches. 
 
 ## 6. Authentication (NextAuth + GitHub)
 
-- Config in `auth.ts` registers GitHub provider.
+- Config in `auth.ts` registers GitHub provider with `trustHost: true` for Next.js 16 compatibility.
 - `signIn` callback ensures an `author` document exists (fetch by GitHub id; create if missing).
 - `jwt` callback loads Sanity author `_id` -> `token.id`.
 - `session` callback merges `token.id` into `session.user.id` for server actions and route decisions.
@@ -75,9 +75,10 @@ StartupsLib is a small platform to submit, browse and evaluate startup pitches. 
 
 ## 7. Theming & Fonts
 
-- Theme cookie (`app-theme`) read server-side in `app/layout.tsx` for initial `<html class="dark">` to avoid flicker.
-- `ThemeProvider` supplies `toggleTheme()`; updates DOM class.
+- Theme persisted in `app-theme` cookie; read client-side to avoid blocking server rendering.
+- `ThemeProvider` client component reads cookie on mount and applies `dark` class to `<html>`.
 - `ThemeToggle` persists choice through POST to `/api/theme`.
+- System preference detection as fallback when no cookie set.
 - Local Work Sans font loaded via `next/font/local` (weights mapped to CSS variable `--font-work-sans`).
 
 ## 8. Searching & Filtering

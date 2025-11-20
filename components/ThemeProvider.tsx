@@ -1,6 +1,12 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
 
 type Theme = "light" | "dark";
 
@@ -8,14 +14,39 @@ type ThemeContextValue = {
   theme: Theme;
   toggleTheme: () => void;
   setTheme: (t: Theme) => void;
-}
+};
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
-export const ThemeProvider = ({ children, initialTheme }: { children: ReactNode; initialTheme?: Theme }) => {
-  const [theme, setThemeState] = useState<Theme>(initialTheme || "light");
+function getInitialTheme(): Theme {
+  if (typeof document === "undefined") return "light";
+
+  const cookies = document.cookie.split(";");
+  const themeCookie = cookies.find((c) => c.trim().startsWith("app-theme="));
+  if (themeCookie) {
+    const value = themeCookie.split("=")[1];
+    if (value === "dark" || value === "light") return value;
+  }
+
+  if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    return "dark";
+  }
+
+  return "light";
+}
+
+export const ThemeProvider = ({ children }: { children: ReactNode }) => {
+  const [theme, setThemeState] = useState<Theme>("light");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setThemeState(getInitialTheme());
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
     const root = document.documentElement;
 
     if (theme === "dark") {
@@ -23,11 +54,11 @@ export const ThemeProvider = ({ children, initialTheme }: { children: ReactNode;
     } else {
       root.classList.remove("dark");
     }
-    
-  }, [theme]);
+  }, [theme, mounted]);
 
   const setTheme = (t: Theme) => setThemeState(t);
-  const toggleTheme = () => setThemeState(prev => (prev === "dark" ? "light" : "dark"));
+  const toggleTheme = () =>
+    setThemeState((prev) => (prev === "dark" ? "light" : "dark"));
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>

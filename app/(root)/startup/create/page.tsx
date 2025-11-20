@@ -1,9 +1,10 @@
-import React from "react";
+import React, { Suspense } from "react";
 import StartupForm from "@/components/StartupForm";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const Page = async () => {
+async function CreatePageContent() {
   const session = await auth();
 
   if (!session) redirect("/");
@@ -16,6 +17,14 @@ const Page = async () => {
 
       <StartupForm />
     </>
+  );
+}
+
+const Page = async () => {
+  return (
+    <Suspense fallback={<Skeleton className="w-full h-screen" />}>
+      <CreatePageContent />
+    </Suspense>
   );
 };
 

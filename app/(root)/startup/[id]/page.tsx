@@ -31,15 +31,11 @@ globalThis.isSpace = function (code: number): boolean {
   );
 };
 
-export const experimental_ppr = true;
-
 type PageProps = {
   params: Promise<{ id: string }>;
 };
 
-const Page = async ({
-  params,
-}: PageProps): Promise<ReactElement<PageProps>> => {
+async function StartupContent({ params }: { params: Promise<{ id: string }> }) {
   const id = (await params).id;
   const md = markdownit();
 
@@ -98,7 +94,7 @@ const Page = async ({
             </Link>
           </div>
 
-          <h3 className="text-30-bold">Pitch Details</h3>
+          <h3 className="text-30-bold">Startup Details</h3>
 
           {parsedContent ? (
             <article
@@ -129,6 +125,16 @@ const Page = async ({
         </Suspense>
       </section>
     </>
+  );
+}
+
+const Page = async ({
+  params,
+}: PageProps): Promise<ReactElement<PageProps>> => {
+  return (
+    <Suspense fallback={<Skeleton className="w-full h-screen" />}>
+      <StartupContent params={params} />
+    </Suspense>
   );
 };
 
