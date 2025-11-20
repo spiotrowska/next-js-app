@@ -5,7 +5,7 @@ const config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx,css}",
     "./app/**/*.{js,ts,jsx,tsx,mdx,css}",
     "./sanity/**/*.{js,ts,jsx,tsx,mdx,css}",
-    "./app/globals.css"
+    "./app/globals.css",
   ],
   theme: {
     extend: {
@@ -45,9 +45,13 @@ const config = {
     },
   },
   plugins: [
-    function ({ addVariant }: { addVariant: (name: string, selector: string) => void }) {
-      addVariant('child', '& > *');
-    }
+    function ({
+      addVariant,
+    }: {
+      addVariant: (name: string, selector: string) => void;
+    }) {
+      addVariant("child", "& > *");
+    },
   ],
 };
 

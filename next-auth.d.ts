@@ -5,15 +5,15 @@ declare module "next-auth" {
     user: DefaultSession["user"] & {
       id: string;
     };
-  }
+  };
 
   type User = {
     id: string;
-  }
+  };
 }
 
 declare module "next-auth/jwt" {
   type JWT = {
     id: string;
-  }
+  };
 }
