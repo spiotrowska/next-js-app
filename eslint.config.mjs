@@ -2,13 +2,6 @@
 // See: https://nextjs.org/docs/app/building-your-application/configuring/eslint#eslint-config
 import nextConfig from "eslint-config-next";
 
-const config = [
-  ...Array.isArray(nextConfig) ? nextConfig : [nextConfig],
-  {
-    rules: {
-      "@next/next/no-img-element": "warn",
-    },
-  },
-];
+const config = Array.isArray(nextConfig) ? nextConfig : [nextConfig];
 
 export default config;

@@ -49,7 +49,7 @@ const StartupForm = (): ReactElement => {
       const result = await createPitch(formData, pitch);
 
       if (result.status === "SUCCESS") {
-        router.push(`/startup/${result?._id}`);
+        router.push(`/startup/${result._id}`);
       }
 
       return result;

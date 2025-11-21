@@ -17,22 +17,30 @@ export const createPitch = async (form: FormData, pitch: string) => {
 
   const { title, description, category, link } = Object.fromEntries(form);
 
-  const slug = slugify(title as string, { lower: true, strict: true });
+  const rawTitle = title as string;
+  const slug = slugify(rawTitle, { lower: true, strict: true });
 
   try {
+    let authorRef: string | undefined;
+
+    if (
+      session.user &&
+      typeof session.user.id === "string" &&
+      session.user.id.length > 0
+    ) {
+      authorRef = session.user.id;
+    } else {
+      authorRef = undefined;
+    }
+
+    const slugField = { _type: "slug", current: slug };
     const startup = {
       title,
       description,
       category,
       image: link,
-      slug: {
-        _type: "slug",
-        current: slug,
-      },
-      author: {
-        _type: "reference",
-        _ref: session?.user?.id,
-      },
+      slug: slugField,
+      author: { _type: "reference", _ref: authorRef },
       pitch,
     };
 
@@ -46,8 +54,24 @@ export const createPitch = async (form: FormData, pitch: string) => {
   } catch (error) {
     console.log(error);
 
+    let message: string | undefined;
+
+    if (error instanceof Error) {
+      message = error.message;
+    } else if (typeof error === "string") {
+      message = error;
+    } else if (typeof error === "number") {
+      message = String(error);
+    } else {
+      try {
+        message = JSON.stringify(error);
+      } catch {
+        message = undefined;
+      }
+    }
+
     return parseServerActionResponse({
-      error: JSON.stringify(error),
+      error: message,
       status: "ERROR",
     });
   }

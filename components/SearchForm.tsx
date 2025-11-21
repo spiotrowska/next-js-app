@@ -9,7 +9,7 @@ const SearchForm = ({
   query,
 }: SearchFormProps): ReactElement<SearchFormProps> => {
   return (
-    <Form action="/" scroll={false} className="search-form">
+    <Form action="/" className="search-form">
       <input
         name="query"
         defaultValue={query}

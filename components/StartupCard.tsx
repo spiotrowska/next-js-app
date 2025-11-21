@@ -41,7 +41,13 @@ const StartupCard = ({
         <div className="flex-between mt-5 gap-5">
           <div className="flex-1">
             <p className="text-16-medium line-clamp-1">
-              {author?.name || author?.username || author?.email}
+              {(() => {
+                if (author?.name) return author.name;
+
+                if (author?.username) return author.username;
+
+                return author?.email;
+              })()}
             </p>
 
             <h3 className="text-26-semibold line-clamp-1">{title}</h3>
@@ -60,15 +66,21 @@ const StartupCard = ({
 
         <p className="startup-card_desc">{description}</p>
 
-        {image && title ? (
-          <Image
-            src={image}
-            alt={title}
-            width={164}
-            height={164}
-            className="startup-card_img"
-          />
-        ) : null}
+        {(() => {
+          if (!image) return null;
+
+          if (!title) return null;
+
+          return (
+            <Image
+              src={image}
+              alt={title}
+              width={164}
+              height={164}
+              className="startup-card_img"
+            />
+          );
+        })()}
 
         <div className="flex-between gap-3 mt-5">
           <p className="category-tag">{category}</p>

@@ -29,49 +29,51 @@ const Navbar = async (): Promise<ReactElement> => {
         <div className="flex items-center gap-5 text-black dark:text-white">
           <ThemeToggle />
 
-          {session && session?.user ? (
-            <>
-              <Link href="/startup/create">
-                <span className="max-sm:hidden">Create</span>
-                <BadgePlus className="size-6 sm:hidden text-primary" />
-              </Link>
+          {(() => {
+            if (session && session.user) {
+              return (
+                <>
+                  <Link href="/startup/create">
+                    <span className="max-sm:hidden">Create</span>
+                    <BadgePlus className="size-6 sm:hidden text-primary" />
+                  </Link>
 
+                  <form
+                    action={async () => {
+                      "use server";
+                      await signOut({ redirectTo: "/" });
+                    }}
+                  >
+                    <button type="submit">
+                      <span className="max-sm:hidden">Logout</span>
+                      <LogOut className="size-6 sm:hidden text-primary" />
+                    </button>
+                  </form>
+
+                  <Link href={`/user/${session.user.id}`}>
+                    <Avatar className="size-10">
+                      <AvatarImage
+                        src={session.user.image || ""}
+                        alt={session.user.name || ""}
+                      />
+                      <AvatarFallback>AV</AvatarFallback>
+                    </Avatar>
+                  </Link>
+                </>
+              );
+            }
+
+            return (
               <form
                 action={async () => {
                   "use server";
-
-                  await signOut({ redirectTo: "/" });
+                  await signIn("github");
                 }}
               >
-                <button type="submit">
-                  <span className="max-sm:hidden">Logout</span>
-
-                  <LogOut className="size-6 sm:hidden text-primary" />
-                </button>
+                <button type="submit">Login</button>
               </form>
-
-              <Link href={`/user/${session?.user?.id}`}>
-                <Avatar className="size-10">
-                  <AvatarImage
-                    src={session?.user?.image || ""}
-                    alt={session?.user?.name || ""}
-                  />
-
-                  <AvatarFallback>AV</AvatarFallback>
-                </Avatar>
-              </Link>
-            </>
-          ) : (
-            <form
-              action={async () => {
-                "use server";
-
-                await signIn("github");
-              }}
-            >
-              <button type="submit">Login</button>
-            </form>
-          )}
+            );
+          })()}
         </div>
       </nav>
     </header>

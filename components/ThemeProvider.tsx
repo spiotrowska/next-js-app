@@ -18,40 +18,46 @@ type ThemeContextValue = {
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
-function getInitialTheme(): Theme {
+export function getInitialTheme(): Theme {
   if (typeof document === "undefined") return "light";
 
-  const cookies = document.cookie.split(";");
-  const themeCookie = cookies.find((c) => c.trim().startsWith("app-theme="));
-  if (themeCookie) {
-    const value = themeCookie.split("=")[1];
-    if (value === "dark" || value === "light") return value;
-  }
+  const cookieTheme = readThemeCookie();
 
-  if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-    return "dark";
-  }
+  if (cookieTheme) return cookieTheme;
+
+  const prefersDark = prefersDarkMode();
+
+  if (prefersDark) return "dark";
 
   return "light";
+}
+
+export function readThemeCookie(): Theme | null {
+  const cookies = document.cookie.split(";");
+  const themeCookie = cookies.find((c) => c.trim().startsWith("app-theme="));
+
+  if (!themeCookie) return null;
+
+  const value = themeCookie.split("=")[1];
+
+  return value === "dark" || value === "light" ? value : null;
+}
+
+export function prefersDarkMode(): boolean {
+  return window.matchMedia("(prefers-color-scheme: dark)").matches;
 }
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   // Initialize once; reading cookies in client avoids SSR mismatch while not triggering extra render.
   const [theme, setThemeState] = useState<Theme>(() => getInitialTheme());
-  // We can derive 'mounted' from a ref without triggering a state update inside effect.
-  const [mounted] = useState(true);
 
+  // Apply theme class whenever theme changes.
   useEffect(() => {
-    if (!mounted) return;
-
     const root = document.documentElement;
 
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-  }, [theme, mounted]);
+    if (theme === "dark") root.classList.add("dark");
+    else root.classList.remove("dark");
+  }, [theme]);
 
   const setTheme = (t: Theme) => setThemeState(t);
   const toggleTheme = () =>
