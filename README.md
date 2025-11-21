@@ -21,7 +21,7 @@
 16. Environment Variables
 17. Scripts
 18. Deployment Notes
-19. Future Improvements
+19. Testing & Coverage
 
 ---
 
@@ -128,12 +128,12 @@ StartupsLib is a small platform to submit, browse and evaluate startup pitches. 
 ## 15. Development Setup
 
 ```bash
-pnpm install
-pnpm dev
+npm install
+npm run dev
 ```
 
 - Uses TurboPack in dev (`next dev --turbopack`).
-- Run `pnpm typegen` to extract schema and generate TS types for GROQ results.
+- Run `npm run typegen` to extract schema and generate TS types for GROQ results.
 - Sanity Studio mounted at `/studio` route; requires env vars.
 
 ## 16. Environment Variables
@@ -149,14 +149,18 @@ pnpm dev
 
 ## 17. Scripts
 
-| Script                | Description                             |
-| --------------------- | --------------------------------------- |
-| `dev`                 | Start dev server with TurboPack         |
-| `build`               | Production build                        |
-| `start`               | Run built app                           |
-| `lint`                | ESLint checks                           |
-| `typegen`             | Sanity schema extract + type generation |
-| `predev` / `prebuild` | Auto-run typegen before dev/build       |
+| Script          | Description                                          |
+| --------------- | ---------------------------------------------------- |
+| `dev`           | Start Next.js dev server (Turbopack by default)      |
+| `build`         | Production build                                     |
+| `start`         | Run built production app                             |
+| `lint`          | ESLint checks with zero warnings allowed             |
+| `typegen`       | Extract Sanity schema + generate GROQ TS types       |
+| `predev`        | Ensures schema types up to date before `dev`         |
+| `prebuild`      | Ensures schema types up to date before `build`       |
+| `test`          | Run Jest test suite (passes even if none found)      |
+| `test:watch`    | Jest in watch mode                                   |
+| `test:coverage` | Jest with coverage + 100% enforced thresholds         |
 
 ## 18. Deployment Notes
 
@@ -165,15 +169,46 @@ pnpm dev
 - Use canary Next.js; keep an eye on PPR experimental changes when upgrading.
 - Sentry source maps: upload automatically via build step if configured.
 
-## 19. Future Improvements
+## 19. Testing & Coverage
 
-- Add system theme auto-detect fallback when no cookie set.
-- Introduce optimistic UI for view counts.
-- Implement pagination or infinite scroll for large startup sets.
-- Add image optimization or Sanity image pipeline usage instead of raw URLs.
-- Rate limiting or spam protection on create action.
-- Richer markdown sanitization / allowed elements controls.
-- Dedicated accessibility audit & improvements (focus states, ARIA).
+The project maintains a comprehensive test suite with 100% coverage across statements, branches, functions, and lines for all tracked source files.
+
+### Stack & Configuration
+
+- Runner: Jest (jsdom environment)
+- Transformer: `ts-jest` with ESM enabled (`useESM: true`)
+- Setup: Global test utilities in `jest.setup.ts`
+- Coverage: Enforced 100% thresholds (global + per-path) via `coverageThreshold` in `jest.config.cjs`
+- Collection: `collectCoverageFrom` targets `components/**/*.{ts,tsx}` and `lib/**/*.{ts,tsx}` excluding barrel `index.ts` files
+- Ignored: Build output (`.next/`) and `node_modules` excluded by `testPathIgnorePatterns`
+
+### Test Folder Structure
+
+Component tests are grouped by component for clarity:
+
+```
+components/__tests__/
+	Navbar/
+		Navbar.actions.test.tsx
+		Navbar.avatarBranches.test.tsx
+		...
+	StartupForm/
+		StartupForm.branches.test.tsx
+		StartupForm.submit.test.tsx
+		...
+	ThemeProvider/
+	ThemeToggle/
+	StartupCard/
+	Toast/
+	SearchForm/
+	SearchFormReset/
+	UserStartups/
+	Avatar/
+	View/
+	Ping/
+```
+
+Each file name retains the component prefix for fast fuzzy matching in editors.
 
 ---
 
