@@ -1,4 +1,9 @@
 <h1 align="center">StartupsLib</h1>
+<p align="center">
+	<a href="https://github.com/spiotrowska/next-js-app/actions/workflows/test.yml">
+		<img alt="Tests" src="https://github.com/spiotrowska/next-js-app/actions/workflows/test.yml/badge.svg" />
+	</a>
+</p>
 <p align="center">Pitch ideas. Get feedback. Grow startups – built with Next.js 16 App Router, Sanity, NextAuth, Tailwind & modern DX patterns.</p>
 
 ## Table of Contents
