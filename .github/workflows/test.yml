@@ -31,6 +31,7 @@ jobs:
         run: npm install
 
       - name: Type generation (Sanity)
+        if: env.NEXT_PUBLIC_SANITY_PROJECT_ID != 'dummyProject'
         run: npm run typegen
 
       - name: Run tests with coverage
@@ -68,4 +69,5 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Build application
+        if: env.NEXT_PUBLIC_SANITY_PROJECT_ID != 'dummyProject'
         run: npm run build

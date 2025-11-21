@@ -215,6 +215,26 @@ components/__tests__/
 
 Each file name retains the component prefix for fast fuzzy matching in editors.
 
+### CI / GitHub Actions
+
+A workflow (`.github/workflows/test.yml`) runs on push/PR:
+
+- Installs dependencies
+- Conditionally runs Sanity type generation & build (skipped when placeholder `dummyProject` is set)
+- Executes Jest coverage (100% thresholds enforced)
+- Uploads `coverage/lcov.info` as an artifact
+
+To enable Sanity steps in CI, add repository secrets and then replace the placeholder env values:
+
+| Secret               | Maps to env var                     |
+| -------------------- | ------------------------------------ |
+| `SANITY_PROJECT_ID`  | `NEXT_PUBLIC_SANITY_PROJECT_ID`      |
+| `SANITY_DATASET`     | `NEXT_PUBLIC_SANITY_DATASET`         |
+| `SANITY_WRITE_TOKEN` | `SANITY_WRITE_TOKEN`                 |
+
+After adding secrets you can remove the conditional `if: env.NEXT_PUBLIC_SANITY_PROJECT_ID != 'dummyProject'` lines to always run typegen/build.
+
+
 ---
 
 ## Contributing
