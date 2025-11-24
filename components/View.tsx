@@ -14,7 +14,10 @@ const View = async ({ id }: ViewProps): Promise<ReactElement<ViewProps>> => {
 
   after(
     async () =>
-      await writeClient.patch(id).set({ views: totalViews + 1 }).commit()
+      await writeClient
+        .patch(id)
+        .set({ views: totalViews + 1 })
+        .commit()
   );
 
   return (
@@ -24,7 +27,7 @@ const View = async ({ id }: ViewProps): Promise<ReactElement<ViewProps>> => {
       </div>
 
       <p className="view-text">
-        <span className="font-black">Views: {totalViews}</span>
+        <span className="font-black">Views: {totalViews || 0}</span>
       </p>
     </div>
   );
