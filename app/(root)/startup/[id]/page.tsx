@@ -36,12 +36,16 @@ type PageProps = {
 };
 
 async function StartupContent({ params }: { params: Promise<{ id: string }> }) {
-  const id = (await params).id;
+  const { id } = await params;
   const md = markdownit();
 
   const [post, { select: editorPosts }] = await Promise.all([
-    client.fetch(STARTUP_BY_ID_QUERY, { id }),
-    client.fetch(PLAYLIST_BY_SLUG_QUERY, { slug: "editor-picks" }),
+    client.fetch(STARTUP_BY_ID_QUERY, { id }, { next: { revalidate: 300 } }),
+    client.fetch(
+      PLAYLIST_BY_SLUG_QUERY,
+      { slug: "editor-picks" },
+      { next: { revalidate: 300 } }
+    ),
   ]);
 
   if (!post) return notFound();
@@ -83,7 +87,7 @@ async function StartupContent({ params }: { params: Promise<{ id: string }> }) {
 
               <div>
                 <p className="text-20-medium">{post.author?.name}</p>
-                <p className="text-16-medium !text-black-300">
+                <p className="text-16-medium !text-black-300 !dark:text-white">
                   @{post.author?.username}
                 </p>
               </div>
@@ -112,11 +116,11 @@ async function StartupContent({ params }: { params: Promise<{ id: string }> }) {
           <div className="max-w-4xl mx-auto">
             <p className="text-30-semibold">Other startups</p>
 
-            <ul className="mt-7 pl-0 card_grid-sm">
+            <div className="mt-7 pl-0 card_grid-sm">
               {editorPosts.map((post: StartupTypeCard) => (
                 <StartupCard key={post._id} post={post} />
               ))}
-            </ul>
+            </div>
           </div>
         ) : null}
 
@@ -139,3 +143,17 @@ const Page = async ({
 };
 
 export default Page;
+
+// Incremental static regeneration for startup pages.
+
+// Pre-generate startup IDs for static rendering; fallback to on-demand if large dataset.
+export async function generateStaticParams(): Promise<Array<{ id: string }>> {
+  try {
+    const ids: string[] = await client.fetch(
+      '*[_type == "startup" && defined(_id)][]._id'
+    );
+    return ids.slice(0, 50).map((val) => ({ id: val }));
+  } catch {
+    return [];
+  }
+}

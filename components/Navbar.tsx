@@ -18,7 +18,7 @@ const Navbar = async (): Promise<ReactElement> => {
             alt="Logo"
             width={144}
             height={30}
-            className="h-[40px] w-auto"
+            className="h-[40px] w-auto rounded-full"
           />
 
           <span className="uppercase text-xl font-semibold text-black dark:text-white">
@@ -33,7 +33,7 @@ const Navbar = async (): Promise<ReactElement> => {
             if (session && session.user) {
               return (
                 <>
-                  <Link href="/startup/create">
+                  <Link href="/startup/create" aria-label="Create startup">
                     <span className="max-sm:hidden">Create</span>
                     <BadgePlus className="size-6 sm:hidden text-primary" />
                   </Link>
@@ -44,17 +44,20 @@ const Navbar = async (): Promise<ReactElement> => {
                       await signOut({ redirectTo: "/" });
                     }}
                   >
-                    <button type="submit">
+                    <button type="submit" aria-label="Logout">
                       <span className="max-sm:hidden">Logout</span>
                       <LogOut className="size-6 sm:hidden text-primary" />
                     </button>
                   </form>
 
-                  <Link href={`/user/${session.user.id}`}>
+                  <Link
+                    href={`/user/${session.user.id}`}
+                    aria-label="User profile"
+                  >
                     <Avatar className="size-10">
                       <AvatarImage
                         src={session.user.image || ""}
-                        alt={session.user.name || ""}
+                        alt={session.user.name || "User avatar"}
                       />
                       <AvatarFallback>AV</AvatarFallback>
                     </Avatar>

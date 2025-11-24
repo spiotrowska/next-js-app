@@ -8,7 +8,7 @@ export default function Layout({
   children,
 }: LayoutProps): ReactElement<LayoutProps> {
   return (
-    <main className="font-work-sans">
+    <main id="main-content" className="font-work-sans">
       <Suspense
         fallback={<Skeleton className="w-full h-16 fixed top-0 z-50" />}
       >

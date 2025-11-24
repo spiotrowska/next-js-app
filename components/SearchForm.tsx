@@ -10,18 +10,29 @@ const SearchForm = ({
 }: SearchFormProps): ReactElement<SearchFormProps> => {
   return (
     <Form action="/" className="search-form">
+      <label htmlFor="search-query" className="sr-only">
+        Search startups
+      </label>
+
       <input
+        id="search-query"
         name="query"
         defaultValue={query}
-        className="search-input dark:bg-black-100 dark:text-white"
+        className="search-input text-black dark:bg-black-100 dark:text-white"
         placeholder="Search Startup"
+        aria-label="Search startups"
       />
 
       <div className="flex gap-2">
         {query ? <SearchFormReset /> : null}
 
-        <button type="submit" className="search-btn text-white">
-          <Search className="size-5" />
+        <button
+          type="submit"
+          className="search-btn text-white"
+          aria-label="Search"
+        >
+          <Search className="size-5" aria-hidden="true" focusable="false" />
+          <span className="sr-only">Search</span>
         </button>
       </div>
     </Form>

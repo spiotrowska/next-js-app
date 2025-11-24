@@ -1,9 +1,9 @@
 import React from "react";
-import { render } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
 describe("ThemeProvider invalid cookie with dark preference", () => {
-  test("prefers dark mode when cookie value invalid", () => {
+  test("prefers dark mode when cookie value invalid", async () => {
     // Set an invalid theme cookie value
     document.cookie = "app-theme=blue";
     Object.defineProperty(window, "matchMedia", {
@@ -24,6 +24,8 @@ describe("ThemeProvider invalid cookie with dark preference", () => {
         <div>child</div>
       </ThemeProvider>
     );
-    expect(document.documentElement.classList.contains("dark")).toBe(true);
+    await waitFor(() =>
+      expect(document.documentElement.classList.contains("dark")).toBe(true)
+    );
   });
 });

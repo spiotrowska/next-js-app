@@ -45,7 +45,7 @@ describe("Navbar additional authenticated variants", () => {
     const ui = await Navbar();
     render(<ThemeProvider>{ui}</ThemeProvider>);
     // Assert user profile link rendered; image OR branch executed.
-    expect(screen.getByRole("link", { name: /av/i })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /user profile/i })).toHaveAttribute(
       "href",
       "/user/img1"
     );
@@ -57,7 +57,7 @@ describe("Navbar additional authenticated variants", () => {
     });
     const ui = await Navbar();
     render(<ThemeProvider>{ui}</ThemeProvider>);
-    expect(screen.getByRole("link", { name: /av/i })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /user profile/i })).toHaveAttribute(
       "href",
       "/user/noname"
     );
