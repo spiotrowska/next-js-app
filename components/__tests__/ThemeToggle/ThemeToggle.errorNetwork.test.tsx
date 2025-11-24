@@ -22,7 +22,7 @@ Object.defineProperty(window, "matchMedia", {
 });
 
 describe("ThemeToggle network error branch", () => {
-  test("toggles locally even when fetch rejects", async () => {
+  test("toggles locally without network dependency", async () => {
     const user = userEvent.setup();
     render(
       <ThemeProvider>
@@ -31,7 +31,7 @@ describe("ThemeToggle network error branch", () => {
     );
     const button = screen.getByRole("button", { name: /toggle theme/i });
     await user.click(button);
-    // Either icon is now Sun (dark) or Moon (light); ensure fetch called and error swallowed.
-    expect(global.fetch).toHaveBeenCalled();
+    // Cookie should reflect new theme regardless of network failure.
+    expect(document.cookie).toMatch(/app-theme=(dark|light)/);
   });
 });

@@ -29,7 +29,9 @@ describe("ThemeProvider setTheme direct branch remove/add", () => {
     expect(document.documentElement.classList.contains("dark")).toBe(false);
     fireEvent.click(getByText("to-dark"));
     expect(document.documentElement.classList.contains("dark")).toBe(true);
+    expect(document.cookie).toMatch(/app-theme=dark/);
     fireEvent.click(getByText("to-light"));
     expect(document.documentElement.classList.contains("dark")).toBe(false);
+    expect(document.cookie).toMatch(/app-theme=light/);
   });
 });

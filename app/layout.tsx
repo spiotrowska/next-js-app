@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import "./globals.css";
 import { ReactNode, ReactElement } from "react";
 import localFont from "next/font/local";
@@ -65,11 +66,15 @@ export const metadata: Metadata = {
 
 type RootLayoutProps = Readonly<{ children: ReactNode }>;
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
-}: RootLayoutProps): ReactElement<RootLayoutProps> {
+}: RootLayoutProps): Promise<ReactElement<RootLayoutProps>> {
+  const cookieStore = await cookies();
+  const themeCookie = cookieStore.get("app-theme")?.value;
+  const htmlClass = themeCookie === "dark" ? "dark" : "";
+
   return (
-    <html lang="en">
+    <html lang="en" className={htmlClass}>
       <body className={cn("dark:bg-black", workSans.variable)}>
         <ThemeProvider>
           {children}

@@ -61,7 +61,7 @@ StartupsLib is a small platform to submit, browse and evaluate startup pitches. 
 - App Router: top-level `app/layout.tsx` (fonts, theme, toaster) + sectional `(root)` layout with navbar.
 - Dynamic routes: `startup/[id]`, `user/[id]` using server components.
 - **Cache Components (Partial Prerendering)**: Enabled via `cacheComponents: true` in Next.js 16. All async data access wrapped in Suspense boundaries for optimal streaming and caching.
-- API route: `/api/theme` for theme persistence.
+- Optional API route: `/api/theme` (legacy cookie persistence – current UI writes directly via Zustand store; kept for external or scripted theme updates).
 
 ## 5. Data Layer (Sanity)
 
@@ -81,11 +81,13 @@ StartupsLib is a small platform to submit, browse and evaluate startup pitches. 
 
 ## 7. Theming & Fonts
 
-- Theme persisted in `app-theme` cookie; read client-side to avoid blocking server rendering.
-- `ThemeProvider` client component reads cookie on mount and applies `dark` class to `<html>`.
-- `ThemeToggle` persists choice through POST to `/api/theme`.
-- System preference detection as fallback when no cookie set.
-- Local Work Sans font loaded via `next/font/local` (weights mapped to CSS variable `--font-work-sans`).
+- State: Zustand store (`lib/theme-store.ts`) with `theme`, `setTheme`, `toggleTheme`, `initialize`.
+- Persistence: `app-theme` cookie (`Path=/; Max-Age=1y; SameSite=Lax`).
+- SSR: `app/layout.tsx` sets `<html class="dark">` if cookie = dark (no flash).
+- Preference fallback: Uses `prefers-color-scheme: dark` when no cookie.
+- Utilities: `lib/theme-utils.ts` (`getInitialTheme`, `readThemeCookie`, `prefersDarkMode`).
+- Toggle: `ThemeToggle` calls `toggleTheme` (no network request).
+- Fonts: Local Work Sans via `next/font/local` → `--font-work-sans` variable.
 
 ## 8. Searching & Filtering
 

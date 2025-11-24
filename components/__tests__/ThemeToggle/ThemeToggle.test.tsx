@@ -23,7 +23,7 @@ Object.defineProperty(window, "matchMedia", {
 });
 
 describe("ThemeToggle", () => {
-  test("toggles theme from light to dark and calls fetch", async () => {
+  test("toggles theme from light to dark and updates cookie", async () => {
     const user = userEvent.setup();
     render(
       <ThemeProvider>
@@ -33,6 +33,6 @@ describe("ThemeToggle", () => {
     const button = screen.getByRole("button", { name: /toggle theme/i });
     // Initial theme may be light or dark depending on media; force expectation by clicking.
     await user.click(button);
-    expect(global.fetch).toHaveBeenCalled();
+    expect(document.cookie).toMatch(/app-theme=(dark|light)/);
   });
 });

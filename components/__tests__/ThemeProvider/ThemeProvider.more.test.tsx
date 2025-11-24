@@ -53,21 +53,18 @@ describe("ThemeProvider additional branches", () => {
     const btn = getByText(/mode:light/);
     fireEvent.click(btn);
     expect(document.documentElement.classList.contains("dark")).toBe(true);
+    expect(document.cookie).toMatch(/app-theme=dark/);
     fireEvent.click(getByText(/mode:dark/));
     expect(document.documentElement.classList.contains("dark")).toBe(false);
+    expect(document.cookie).toMatch(/app-theme=light/);
   });
 
-  test("useTheme throws outside provider", () => {
+  test("useTheme outside provider still works via store (no throw)", () => {
     const Outside = () => {
-      // Intentionally call hook outside provider.
-      try {
-        useTheme();
-      } catch (e) {
-        return <p>threw</p>;
-      }
-      return <p>no-throw</p>;
+      const { theme } = useTheme();
+      return <p>theme:{theme}</p>;
     };
     const { getByText } = render(<Outside />);
-    expect(getByText("threw")).toBeInTheDocument();
+    expect(getByText(/theme:/)).toBeInTheDocument();
   });
 });
