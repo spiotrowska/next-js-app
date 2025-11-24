@@ -15,13 +15,13 @@ const config = {
       colors: {
         primary: {
           "100": "#d5eeff",
-          DEFAULT: "#80A5B5",
+          DEFAULT: "#5E8595", // Adjusted for higher contrast
         },
-        secondary: "#5DFFE9",
+        secondary: "#00C7B0", // Darker aqua for contrast
         black: {
           "100": "#333333",
           "200": "#141413",
-          "300": "#7D8087",
+          "300": "#5A5D63", // Darkened from #7D8087
           DEFAULT: "#000000",
         },
         white: {

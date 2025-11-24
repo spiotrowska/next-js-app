@@ -1,9 +1,9 @@
 import React from "react";
-import { render } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
 describe("ThemeProvider cookie overrides", () => {
-  test("applies light theme when cookie set to light even if prefers dark", () => {
+  test("applies light theme when cookie set to light even if prefers dark", async () => {
     Object.defineProperty(window, "matchMedia", {
       writable: true,
       value: (query: string) => ({
@@ -23,10 +23,12 @@ describe("ThemeProvider cookie overrides", () => {
         <div>child</div>
       </ThemeProvider>
     );
-    expect(document.documentElement.classList.contains("dark")).toBe(false);
+    await waitFor(() =>
+      expect(document.documentElement.classList.contains("dark")).toBe(false)
+    );
   });
 
-  test("applies dark theme when cookie set to dark", () => {
+  test("applies dark theme when cookie set to dark", async () => {
     Object.defineProperty(window, "matchMedia", {
       writable: true,
       value: () => ({
@@ -46,6 +48,8 @@ describe("ThemeProvider cookie overrides", () => {
         <div>child</div>
       </ThemeProvider>
     );
-    expect(document.documentElement.classList.contains("dark")).toBe(true);
+    await waitFor(() =>
+      expect(document.documentElement.classList.contains("dark")).toBe(true)
+    );
   });
 });

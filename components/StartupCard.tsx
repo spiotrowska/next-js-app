@@ -3,7 +3,6 @@ import { cn, formatDate } from "@/lib/utils";
 import { EyeIcon } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 import { Author, Startup } from "@/sanity/types";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -32,7 +31,11 @@ const StartupCard = ({
           <p className="startup_card_date">{formatDate(_createdAt)}</p>
 
           <div className="flex gap-1.5">
-            <EyeIcon className="size-6 text-primary" />
+            <EyeIcon
+              className="size-6 text-primary"
+              aria-hidden="true"
+              focusable="false"
+            />
 
             <span className="text-16-medium">{views}</span>
           </div>
@@ -85,9 +88,9 @@ const StartupCard = ({
         <div className="flex-between gap-3 mt-5">
           <p className="category-tag">{category}</p>
 
-          <Button className="startup-card_btn" asChild>
-            <span>Details</span>
-          </Button>
+          <span className="startup-card_btn" aria-hidden="true">
+            Details
+          </span>
         </div>
       </Link>
     </article>

@@ -40,14 +40,15 @@ async function UserProfile({ params }: { params: Promise<{ id: string }> }) {
       </div>
 
       <div className="flex-1 flex flex-col gap-5 lg:-mt-5">
-        <p className="text-30-bold">
+        <h1 className="text-30-bold">
           {session?.user?.id === id ? "Your" : "All"} Startups
-        </p>
-        <ul className="card_grid-sm">
+        </h1>
+
+        <div className="card_grid-sm">
           <Suspense fallback={<StartupCardSkeleton />}>
             <UserStartups id={id} />
           </Suspense>
-        </ul>
+        </div>
       </div>
     </section>
   );

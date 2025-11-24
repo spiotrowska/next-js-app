@@ -49,8 +49,18 @@ const Toast = React.forwardRef<
 >(({ className, variant, ...props }, ref) => {
   const variantClasses = toastVariants({ variant });
   const merged = cn(variantClasses, className);
+  const role = variant === "destructive" ? "alert" : "status";
+  const ariaLive = variant === "destructive" ? "assertive" : "polite";
 
-  return <ToastPrimitives.Root ref={ref} className={merged} {...props} />;
+  return (
+    <ToastPrimitives.Root
+      ref={ref}
+      className={merged}
+      role={role}
+      aria-live={ariaLive}
+      {...props}
+    />
+  );
 });
 
 Toast.displayName = ToastPrimitives.Root.displayName;
@@ -91,6 +101,7 @@ const ToastClose = React.forwardRef<
       ref={ref}
       className={closeMerged}
       toast-close=""
+      aria-label="Close notification"
       {...props}
     >
       <X className="h-4 w-4" />

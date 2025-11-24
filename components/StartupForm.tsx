@@ -107,10 +107,14 @@ const StartupForm = (): ReactElement => {
           className="startup-form_input"
           required
           placeholder="Startup Title"
+          aria-invalid={Boolean(errors.title)}
+          aria-describedby={errors.title ? "title-error" : undefined}
         />
 
         {errors.title ? (
-          <p className="startup-form_error">{errors.title}</p>
+          <p id="title-error" className="startup-form_error">
+            {errors.title}
+          </p>
         ) : null}
       </div>
 
@@ -125,10 +129,16 @@ const StartupForm = (): ReactElement => {
           className="startup-form_textarea"
           required
           placeholder="Startup Description"
+          aria-invalid={Boolean(errors.description)}
+          aria-describedby={
+            errors.description ? "description-error" : undefined
+          }
         />
 
         {errors.description ? (
-          <p className="startup-form_error">{errors.description}</p>
+          <p id="description-error" className="startup-form_error">
+            {errors.description}
+          </p>
         ) : null}
       </div>
 
@@ -143,10 +153,14 @@ const StartupForm = (): ReactElement => {
           className="startup-form_input"
           required
           placeholder="Startup Category (Tech, Health, Education, etc.)"
+          aria-invalid={Boolean(errors.category)}
+          aria-describedby={errors.category ? "category-error" : undefined}
         />
 
         {errors.category ? (
-          <p className="startup-form_error">{errors.category}</p>
+          <p id="category-error" className="startup-form_error">
+            {errors.category}
+          </p>
         ) : null}
       </div>
 
@@ -161,10 +175,14 @@ const StartupForm = (): ReactElement => {
           className="startup-form_input"
           required
           placeholder="Paste a link to your demo or promotional media"
+          aria-invalid={Boolean(errors.link)}
+          aria-describedby={errors.link ? "link-error" : undefined}
         />
 
         {errors.link ? (
-          <p className="startup-form_error">{errors.link}</p>
+          <p id="link-error" className="startup-form_error">
+            {errors.link}
+          </p>
         ) : null}
       </div>
 
@@ -183,6 +201,8 @@ const StartupForm = (): ReactElement => {
           textareaProps={{
             placeholder:
               "Briefly describe your idea and what a problem it solves",
+            "aria-invalid": Boolean(errors.pitch),
+            "aria-describedby": errors.pitch ? "pitch-error" : undefined,
           }}
           previewOptions={{
             disallowedElements: ["style"],
@@ -190,7 +210,9 @@ const StartupForm = (): ReactElement => {
         />
 
         {errors.pitch ? (
-          <p className="startup-form_error">{errors.pitch}</p>
+          <p id="pitch-error" className="startup-form_error">
+            {errors.pitch}
+          </p>
         ) : null}
       </div>
 

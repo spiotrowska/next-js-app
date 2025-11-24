@@ -27,8 +27,10 @@ export function ThemeToggle(): ReactElement {
       type="button"
       variant="ghost"
       aria-label="Toggle theme"
-  onClick={handleToggle}
+      aria-pressed={theme === "dark"}
+      onClick={handleToggle}
       className="size-9 p-0 flex items-center justify-center"
+      suppressHydrationWarning
     >
       {theme === "dark" ? (
         <Sun className="size-5 text-black dark:text-white" />

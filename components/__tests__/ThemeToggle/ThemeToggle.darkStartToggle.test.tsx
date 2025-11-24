@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ThemeProvider, readThemeCookie } from "@/components/ThemeProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -30,12 +30,16 @@ describe("ThemeToggle dark start toggle next computation", () => {
         <ThemeToggle />
       </ThemeProvider>
     );
-    // Initially dark branch rendered -> Sun icon present.
-    expect(document.documentElement.classList.contains("dark")).toBe(true);
+    // Initially dark branch rendered -> Sun icon present (after async hydration update).
+    await waitFor(() =>
+      expect(document.documentElement.classList.contains("dark")).toBe(true)
+    );
     const button = screen.getByRole("button", { name: /toggle theme/i });
     await user.click(button);
     // After toggle, dark class removed, fetch called with next=light.
-    expect(document.documentElement.classList.contains("dark")).toBe(false);
+    await waitFor(() =>
+      expect(document.documentElement.classList.contains("dark")).toBe(false)
+    );
     expect(global.fetch).toHaveBeenCalled();
     const bodyArg = (global.fetch as jest.Mock).mock.calls[0][1].body as string;
     expect(bodyArg).toMatch(/"theme":"light"/);

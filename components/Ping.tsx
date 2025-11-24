@@ -2,7 +2,7 @@ import React, { ReactElement } from "react";
 
 const Ping = (): ReactElement => {
   return (
-    <div className="relative">
+    <div className="relative" aria-hidden="true" role="presentation">
       <div className="absolute -left-4 top-1">
         <span className="flex size-[11px]">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>

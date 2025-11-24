@@ -48,10 +48,17 @@ export function prefersDarkMode(): boolean {
 }
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  // Initialize once; reading cookies in client avoids SSR mismatch while not triggering extra render.
-  const [theme, setThemeState] = useState<Theme>(() => getInitialTheme());
+  const [theme, setThemeState] = useState<Theme>("light");
 
-  // Apply theme class whenever theme changes.
+  useEffect(() => {
+    const detected = getInitialTheme();
+
+    if (detected !== theme) {
+      setTimeout(() => setThemeState(detected), 0);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     const root = document.documentElement;
 
